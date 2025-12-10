@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: cyrus_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cyrus_db
+      MYSQL_USER: cyrus_user
+      MYSQL_PASSWORD: cyrus_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - cyrus_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: cyrus_app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    environment:
+      DB_HOST: db
+      DB_USER: cyrus_user
+      DB_PASSWORD: cyrus_pass
+      DB_NAME: cyrus_db
+
+volumes:
+  cyrus_data:
